@@ -1,23 +1,34 @@
-import logo from './logo.svg';
-import './App.css';
+import {useState, useEffect} from 'react'
+import { getTodos } from './api/fetch';
 
 function App() {
+const [todoList, setTodoList] = useState([]);
+
+const getTodoList = async() => {
+  try{
+   const allTodos = await getTodos();
+   setTodoList(allTodos)
+  }catch(error){
+    console.log(error.message)
+  }
+}
+
+useEffect(() => {
+  getTodoList();
+},[])
+
+const renderTodoList = todoList.map(todoElement => {
+  return (
+  <div key={todoElement.taskId}>
+    <h3>{todoElement.description}</h3>
+    <p>{todoElement.assignee}</p>
+  </div>)
+})
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <h1>Kat's Tasks</h1>
+      <div>{renderTodoList}</div>
     </div>
   );
 }
